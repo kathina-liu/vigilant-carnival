@@ -1,0 +1,80 @@
+Private Sub Workbook_Open()
+
+Dim keyword As Range
+Dim you As Variant
+Dim answer As Variant
+Dim lookup As Range
+Dim row As Range
+Dim cell As Range
+Dim kathina As Variant
+
+
+Set keyword = ThisWorkbook.Sheets("My Brain").Range("B1:B9")
+Set row = ThisWorkbook.Sheets("My Brain").Range("A2:D2")
+Set you = ThisWorkbook.Sheets("Kathina").Range("User")
+Set answer = ThisWorkbook.Sheets("Kathina").Range("Kathina")
+Set lookup = ThisWorkbook.Sheets("My Brain").Range("A2:D8")
+Set cell = ThisWorkbook.Sheets("My Brain").Range("A1:D8")
+
+
+If Target.Address = Range("User").Address Then
+    MsgBox "You have typed: " & Range("User")
+End If
+
+    UserInput = LCase(Range("User").Value)
+    
+    If Range("User") = "bye" Then
+    response = "Nice to talk to you. Bye!"
+    Application.DisplayAlerts = False
+    Application.Quit
+End If
+
+
+row = 2
+While cell(row, 1) Is Not Empty
+    row = row + 1
+
+    If InStr(1, "you", "keyword") = 1 _
+    And Right(you, 1) <> keyword Then
+        answer = _
+            Application.WorksheetFunction.VLookup("keyword", _
+            ThisWorkbook.Sheets("My Brain"), lookup, 4)
+   Range("Kathina").Value = answer
+   
+   ElseIf InStr(1, "you", "keyword") > 1 _
+   And Right(you, 1) = keyword Then
+        answer = _
+            Application.WorksheetFunction.VLookup("keyword", _
+            ThisWorkbook.Sheets("My Brain"), lookup, 4)
+   Range("Kathina").Value = answer
+   
+   ElseIf InStr(1, "you", "keyword") > 1 _
+   And Right(you, 1) <> keyword Then
+         answer = _
+            Application.WorksheetFunction.VLookup("keyword", _
+            ThisWorkbook.Sheets("My Brain"), lookup, 4)
+   Range("Kathina").Value = answer
+   
+End If
+
+    If InStr(1, "you", "keyword") = 0 Then
+    answer = "Please tell me more."
+    Range("Kathina").Value = answer
+
+End If
+Wend
+
+
+
+
+
+Unprotect
+Range("Kathina") = response
+Protect
+
+
+If Target.Address = Range("User").Address Then
+Range("Eliza").Speak xlSpeakByColumns
+End If
+
+End Sub
